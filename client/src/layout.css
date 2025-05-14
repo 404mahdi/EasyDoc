@@ -117,11 +117,13 @@
 }
 
 .header-action-icon {
-  font-size: 24px;
+  font-size: 22px;
   color: #2a9d8f !important;
   cursor: pointer;
-  padding-left: 16px;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-action-icon:hover {
@@ -129,9 +131,50 @@
   transform: scale(1.05);
 }
 
-.ant-scroll-number-only-unit {
-  padding-right: -10px !important;
-  padding-bottom: -10px !important;
+/* Header user profile and notifications */
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-notification {
+  position: relative;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.header-username {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #f0f8ff;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.header-username:hover {
+  background-color: #e6f2ff;
+  color: var(--primary-color);
+}
+
+/* Fix for the notification badge position */
+.ant-badge {
+  display: flex;
+  align-items: center;
+}
+
+/* Fix for the notification badge number position */
+.ant-badge-count {
+  font-size: 10px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  line-height: 18px !important;
+  box-shadow: 0 0 0 1px #fff;
 }
 
 /* Custom scrollbar for the body content */

@@ -128,17 +128,24 @@ function Layout({ children }) {
                 className="ri-close-fill header-action-icon"
                 onClick={() => setCollapsed(true)}
               ></i>
-            )}
+            )}{" "}
+            <div className="header-user-info">
+              <div className="header-notification">
+                <Badge
+                  count={user?.unseenNotifications.length}
+                  onClick={() => navigate("/notifications")}
+                  size="small"
+                  offset={[0, 0]}
+                >
+                  <i className="ri-notification-line header-action-icon"></i>
+                </Badge>
+              </div>
 
-            <div className="d-flex align-items-center px-4">
-              <Badge
-                count={user?.unseenNotifications.length}
-                onClick={() => navigate("/notifications")}
-              >
-                <i className="ri-notification-line header-action-icon px-3"></i>
-              </Badge>
-
-              <Link className="anchor mx-2" to="/profile">
+              <Link className="header-username" to="/profile">
+                <i
+                  className="ri-user-3-line"
+                  style={{ marginRight: "5px" }}
+                ></i>
                 {user?.name}
               </Link>
             </div>

@@ -194,3 +194,30 @@ p {
   height: 3px;
   background-color: var(--secondary-color);
 }
+
+/* Profile Page */
+.profile-card {
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 30px;
+  margin-bottom: 30px;
+  background-color: white;
+  transition: var(--transition);
+}
+
+.profile-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profile-card h2 {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.profile-card .ant-form-item-label > label {
+  font-weight: 500;
+  color: var(--text-color);
+}

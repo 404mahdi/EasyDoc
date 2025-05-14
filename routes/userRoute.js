@@ -262,4 +262,36 @@ router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
     });
   }
 });
+
+router.post("/update-user-profile", authMiddleware, async (req, res) => {
+  try {
+    // Only update fields that are provided and allowed to be updated
+    const updateData = { name: req.body.name };
+
+    // Additional fields can be added here as needed
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.body.userId },
+      updateData,
+      { new: true }
+    );
+
+    // Don't send password in response
+    user.password = undefined;
+
+    res.status(200).send({
+      message: "User profile updated successfully",
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error updating user profile",
+      success: false,
+      error,
+    });
+  }
+});
+
 module.exports = router;

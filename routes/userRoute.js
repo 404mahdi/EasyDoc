@@ -1,12 +1,13 @@
-const express = require("express");
+import express from "express";
+import User from "../models/userModel.js";
+import Doctor from "../models/doctorModel.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import Appointment from "../models/appointmentModel.js";
+import moment from "moment";
+
 const router = express.Router();
-const User = require("../models/userModel");
-const Doctor = require("../models/doctorModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const authMiddleware = require("../middlewares/authMiddleware");
-const Appointment = require("../models/appointmentModel");
-const moment = require("moment");
 
 router.post("/register", async (req, res) => {
   try {
@@ -52,7 +53,13 @@ router.post("/login", async (req, res) => {
       });
       res
         .status(200)
-        .send({ message: "Login successful", success: true, data: token });
+        .send({
+          message: "Login successful",
+          success: true,
+          data: token,
+          role: user.isAdmin ? "admin" : (user.isDoctor ? "doctor" : "user"),
+          isAdmin: user.isAdmin
+        });
     }
   } catch (error) {
     console.log(error);
@@ -262,4 +269,5 @@ router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
     });
   }
 });
-module.exports = router;
+
+export default router;

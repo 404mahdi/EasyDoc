@@ -1,18 +1,25 @@
 import React from "react";
-import 'antd/dist/antd.min.css'
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import store from "./redux/store";
+import StoreContextProvider from "./context/StoreContext";
+import "antd/dist/antd.min.css";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <StoreContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </StoreContextProvider>
+    </Provider>
+  </React.StrictMode>
 );
-
 
 reportWebVitals();

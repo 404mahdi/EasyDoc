@@ -1,8 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { Button } from "antd";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import { useSelector } from "react-redux";
@@ -16,14 +15,21 @@ import Profile from "./pages/Doctor/Profile";
 import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
+import Pharma from "./Pharma.jsx";
+import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
+import Cart from "./pages/Cart/Cart";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import MyOrders from "./pages/MyOrders/MyOrders";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
+
   return (
-    <BrowserRouter>
+    <>
       {loading && (
         <div className="spinner-parent">
-          <div class="spinner-border" role="status"></div>
+          <div className="spinner-border" role="status"></div>
         </div>
       )}
       <Toaster position="top-center" reverseOrder={false} />
@@ -60,6 +66,10 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/pharma/*" element={<Pharma />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<PlaceOrder />} />
+        <Route path="/myorders" element={<MyOrders />} />
         <Route
           path="/notifications"
           element={
@@ -76,7 +86,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/admin/doctorslist"
           element={
@@ -85,7 +94,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/doctor/profile/:userId"
           element={
@@ -94,7 +102,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/book-appointment/:doctorId"
           element={
@@ -111,7 +118,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/doctor/appointments"
           element={
@@ -121,7 +127,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 

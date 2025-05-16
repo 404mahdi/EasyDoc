@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
+import Doctor from "../models/doctorModel.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import Appointment from "../models/appointmentModel.js";
+import User from "../models/userModel.js";
+
 const router = express.Router();
-const Doctor = require("../models/doctorModel");
-const authMiddleware = require("../middlewares/authMiddleware");
-const Appointment = require("../models/appointmentModel");
-const User = require("../models/userModel");
 
 router.post("/get-doctor-info-by-user-id", authMiddleware, async (req, res) => {
   try {
@@ -107,4 +108,4 @@ router.post("/change-appointment-status", authMiddleware, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

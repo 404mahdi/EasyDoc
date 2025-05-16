@@ -25,7 +25,13 @@ function Layout({ children }) {
       name: "Apply Doctor",
       path: "/apply-doctor",
       icon: "ri-hospital-line",
-    }
+    },
+    {
+      name: "Pharmacy",
+      path: "/pharma",
+      icon: "ri-hospital-line",
+    },
+ 
   ];
 
   const doctorMenu = [
@@ -44,6 +50,11 @@ function Layout({ children }) {
       path: `/doctor/profile/${user?._id}`,
       icon: "ri-user-line",
     },
+    {
+      name: "Pharma",
+      path: "/pharma",
+      icon: "ri-medicine-bottle-line",
+    }
   ];
 
   const adminMenu = [
@@ -67,6 +78,16 @@ function Layout({ children }) {
       path: "/profile",
       icon: "ri-user-line",
     },
+    {
+      name: "Pharma",
+      path: "/pharma",
+      icon: "ri-medicine-bottle-line",
+    },
+    {
+      name: "Pharma Admin",
+      path: "/admin/pharma",
+      icon: "ri-medicine-bottle-fill",
+    }
   ];
 
   const menuToBeRendered = user?.isAdmin ? adminMenu : user?.isDoctor ? doctorMenu : userMenu;
@@ -108,7 +129,7 @@ function Layout({ children }) {
         </div>
 
         <div className="content">
-          <div className="header">
+          <div className="header-layout">
             {collapsed ? (
               <i
                 className="ri-menu-2-fill header-action-icon"

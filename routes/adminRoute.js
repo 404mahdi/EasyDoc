@@ -1,8 +1,10 @@
-const express = require("express");
+import express from "express";
+import User from "../models/userModel.js";
+import Doctor from "../models/doctorModel.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import bcrypt from "bcryptjs";
+
 const router = express.Router();
-const User = require("../models/userModel");
-const Doctor = require("../models/doctorModel");
-const authMiddleware = require("../middlewares/authMiddleware");
 
 router.get("/get-all-doctors", authMiddleware, async (req, res) => {
   try {
@@ -33,7 +35,74 @@ router.get("/get-all-users", authMiddleware, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({
-      message: "Error applying doctor account",
+      message: "Error fetching users",
+      success: false,
+      error,
+    });
+  }
+});
+
+// Route to check if admin users exist
+router.get("/check-admin-users", async (req, res) => {
+  try {
+    const adminUsers = await User.find({ isAdmin: true });
+    res.status(200).send({
+      message: "Admin users check completed",
+      success: true,
+      count: adminUsers.length,
+      data: adminUsers.map(user => ({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }))
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error checking admin users",
+      success: false,
+      error,
+    });
+  }
+});
+
+// Route to create an admin user
+router.post("/create-admin", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Check if email already exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(200).send({
+        message: "User already exists",
+        success: false,
+      });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user with admin privileges
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      isAdmin: true
+    });
+
+    await newUser.save();
+
+    res.status(200).send({
+      message: "Admin user created successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error creating admin user",
       success: false,
       error,
     });
@@ -76,6 +145,4 @@ router.post(
   }
 );
 
-
-
-module.exports = router;
+export default router;

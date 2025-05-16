@@ -1,8 +1,57 @@
-import { Button, Col, Form, Input, Row, TimePicker } from "antd";
+import { Button, Col, Form, Input, Row, TimePicker, message } from "antd";
 import moment from "moment";
 import React from "react";
 
 function DoctorForm({ onFinish, initivalValues }) {
+  // Function to check if time is within allowed slots (30 minute increments)
+  const validateTimeSlots = (_, value) => {
+    if (!value || !value[0] || !value[1]) {
+      return Promise.reject(new Error("Please select start and end time"));
+    }
+
+    const startTime = value[0];
+    const endTime = value[1];
+
+    // Check if start time minutes are on a 30-minute boundary (0 or 30)
+    const startMinutes = startTime.minutes();
+    if (startMinutes !== 0 && startMinutes !== 30) {
+      return Promise.reject(
+        new Error("Start time must be on the hour or half hour")
+      );
+    }
+
+    // Check if end time minutes are on a 30-minute boundary (0 or 30)
+    const endMinutes = endTime.minutes();
+    if (endMinutes !== 0 && endMinutes !== 30) {
+      return Promise.reject(
+        new Error("End time must be on the hour or half hour")
+      );
+    }
+
+    // Check if end time is after start time
+    if (endTime.isSameOrBefore(startTime)) {
+      return Promise.reject(new Error("End time must be after start time"));
+    }
+
+    // Check if the time range is between 6 AM and 10 PM (reasonable working hours)
+    const minTime = moment().hour(6).minute(0).second(0);
+    const maxTime = moment().hour(22).minute(0).second(0);
+
+    if (startTime.isBefore(minTime)) {
+      return Promise.reject(
+        new Error("Start time cannot be earlier than 6:00 AM")
+      );
+    }
+
+    if (endTime.isAfter(maxTime)) {
+      return Promise.reject(
+        new Error("End time cannot be later than 10:00 PM")
+      );
+    }
+
+    return Promise.resolve();
+  };
+
   return (
     <Form
       layout="vertical"
@@ -108,9 +157,27 @@ function DoctorForm({ onFinish, initivalValues }) {
             required
             label="Timings"
             name="timings"
-            rules={[{ required: true }]}
+            rules={[
+              {
+                required: true,
+                message: "Please select your available time slot",
+              },
+              { validator: validateTimeSlots },
+            ]}
+            tooltip="Please select time slots in 30-minute increments between 6:00 AM and 10:00 PM"
           >
-            <TimePicker.RangePicker format="HH:mm" />
+            <TimePicker.RangePicker
+              format="HH:mm"
+              minuteStep={30}
+              hideDisabledOptions={true}
+              disabledHours={() => [
+                ...Array(6).keys(),
+                ...Array(2)
+                  .fill()
+                  .map((_, i) => i + 22),
+              ]}
+              use12Hours
+            />
           </Form.Item>
         </Col>
       </Row>

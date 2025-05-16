@@ -184,11 +184,65 @@ router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
 
 router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
+    const requestedTime = moment(req.body.time, "HH:mm");
+    const doctorId = req.body.doctorId;
+
+    // Get doctor information including available hours
+    const doctorInfo = await Doctor.findOne({ _id: doctorId });
+
+    if (!doctorInfo) {
+      return res.status(200).send({
+        message: "Doctor not found",
+        success: false,
+      });
+    }
+
+    // Check if requested time is within doctor's available hours
+    const doctorStartTime = moment(doctorInfo.timings[0], "HH:mm");
+    const doctorEndTime = moment(doctorInfo.timings[1], "HH:mm");
+
+    // Check if requested time is within doctor's available hours
+    if (
+      requestedTime.isBefore(doctorStartTime) ||
+      requestedTime.isSameOrAfter(doctorEndTime)
+    ) {
+      return res.status(200).send({
+        message: "Selected time is outside of doctor's availability",
+        success: false,
+      });
+    }
+
+    // Check if requested time is at 00 or 30 minute intervals
+    const requestedMinutes = requestedTime.minutes();
+    if (requestedMinutes !== 0 && requestedMinutes !== 30) {
+      return res.status(200).send({
+        message: "Appointments must be booked on the hour or half-hour",
+        success: false,
+      });
+    }
+
+    // Continue with booking if validation passes
     req.body.status = "pending";
     req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
     req.body.time = moment(req.body.time, "HH:mm").toISOString();
+
+    // Check for existing appointments at the same time
+    const existingAppointment = await Appointment.findOne({
+      doctorId,
+      date: req.body.date,
+      time: req.body.time,
+    });
+
+    if (existingAppointment) {
+      return res.status(200).send({
+        message: "This time slot is already booked",
+        success: false,
+      });
+    }
+
     const newAppointment = new Appointment(req.body);
     await newAppointment.save();
+
     //pushing notification to doctor based on his userid
     const user = await User.findOne({ _id: req.body.doctorInfo.userId });
     user.unseenNotifications.push({
@@ -214,11 +268,48 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 router.post("/check-booking-avilability", authMiddleware, async (req, res) => {
   try {
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    const requestedTime = moment(req.body.time, "HH:mm");
     const fromTime = moment(req.body.time, "HH:mm")
       .subtract(1, "hours")
       .toISOString();
     const toTime = moment(req.body.time, "HH:mm").add(1, "hours").toISOString();
     const doctorId = req.body.doctorId;
+
+    // Get doctor information including available hours
+    const doctorInfo = await Doctor.findOne({ _id: doctorId });
+
+    if (!doctorInfo) {
+      return res.status(200).send({
+        message: "Doctor not found",
+        success: false,
+      });
+    }
+
+    // Check if requested time is within doctor's available hours
+    const doctorStartTime = moment(doctorInfo.timings[0], "HH:mm");
+    const doctorEndTime = moment(doctorInfo.timings[1], "HH:mm");
+
+    // Check if requested time is within doctor's available hours
+    if (
+      requestedTime.isBefore(doctorStartTime) ||
+      requestedTime.isSameOrAfter(doctorEndTime)
+    ) {
+      return res.status(200).send({
+        message: "Selected time is outside of doctor's availability",
+        success: false,
+      });
+    }
+
+    // Check if requested time is at 00 or 30 minute intervals
+    const requestedMinutes = requestedTime.minutes();
+    if (requestedMinutes !== 0 && requestedMinutes !== 30) {
+      return res.status(200).send({
+        message: "Appointments must be booked on the hour or half-hour",
+        success: false,
+      });
+    }
+
+    // Check for conflicting appointments
     const appointments = await Appointment.find({
       doctorId,
       date,

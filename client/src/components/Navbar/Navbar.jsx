@@ -27,6 +27,20 @@ const Navbar = ({ setShowLogin }) => {
         >
           home
         </Link>
+        <Link
+          to="/pharma"
+          onClick={() => setMenu("store")}
+          className={menu === "store" ? "active" : ""}
+        >
+          Store
+        </Link>
+        <Link
+          to="/appointments"
+          onClick={() => setMenu("appointments")}
+          className={menu === "appointments" ? "active" : ""}
+        >
+          Book Apointment
+        </Link>
         
       </ul>
       <div className="navbar-right">

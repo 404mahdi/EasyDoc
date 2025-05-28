@@ -31,17 +31,7 @@ EasyDoc is a web-based appointment management system developed as part of the CS
 
 ---
 
-## System Architecture
-
-- **Frontend:** React.js (client/)
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **State Management:** Redux
-- **Testing:** Jest
-
----
-
-## Technologies Used
+## System Architecture & Technologies
 
 | Component        | Technology          |
 | ---------------- | ------------------- |
@@ -71,8 +61,10 @@ tests/              # Backend API tests
 
 ### Prerequisites
 
+```sh
 - Node.js & npm
 - MongoDB
+```
 
 ### Steps
 
@@ -90,6 +82,10 @@ tests/              # Backend API tests
    ```sh
    npm start
    ```
+   or
+   ```sh
+   nodemon server
+   ```
 5. Set up the frontend:
    ```sh
    cd client
@@ -98,15 +94,6 @@ tests/              # Backend API tests
    ```
 
 The frontend runs on `http://localhost:3000` and the backend on `http://localhost:5000` by default.
-
----
-
-## Usage
-
-- Register as a new user or log in with existing credentials.
-- Book appointments with available doctors.
-- Doctors can manage their schedules and view appointments.
-- Admins can manage users and doctors.
 
 ---
 

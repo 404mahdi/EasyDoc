@@ -1,10 +1,6 @@
 # EasyDoc
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0d93367e-e098-457a-a7b9-406df5dfeac5" alt="EasyDoc Logo" width="120" />
-</p>
-
-<p align="center">
   <b>Course:</b> CSE470 - Software Engineering &nbsp;|&nbsp;
   <b>Institution:</b> BRAC University &nbsp;|&nbsp;
   <b>Semester:</b> Spring 2025

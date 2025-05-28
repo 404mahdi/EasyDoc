@@ -194,151 +194,214 @@ function BookAppointment() {
   return (
     <Layout>
       {doctor && (
-        <div>
+        <div className="doctor-appointment-container">
           <h1 className="page-title">
-            {doctor.firstName} {doctor.lastName}
+            Dr. {doctor.firstName} {doctor.lastName}
           </h1>
           <hr />
-          <Row gutter={20} className="mt-5" align="middle">
-            <Col span={8} sm={24} xs={24} lg={8}>
-              <img
-                src="https://thumbs.dreamstime.com/b/finger-press-book-now-button-booking-reservation-icon-online-149789867.jpg"
-                alt=""
-                width="100%"
-                height="400"
-              />
+          <Row gutter={24} className="mt-5">
+            <Col
+              span={16}
+              sm={24}
+              xs={24}
+              lg={16}
+              className="doctor-profile-section"
+            >
+              <div className="card">
+                <div className="doctor-info">
+                  <div className="doctor-header">
+                    <h2 className="card-title">Doctor Information</h2>
+                    <div className="doctor-specialty">
+                      {doctor.specialization}
+                    </div>
+                  </div>
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <i className="fas fa-clock"></i>
+                      <div>
+                        <label>Available Hours</label>
+                        <p>
+                          {doctor.timings[0]} - {doctor.timings[1]}
+                        </p>
+                      </div>
+                    </div>{" "}
+                    <div className="info-item">
+                      <i className="fas fa-phone"></i>
+                      <div>
+                        <label>Phone</label>
+                        <p>{doctor.phoneNumber}</p>
+                      </div>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-map-marker-alt"></i>
+                      <div>
+                        <label>Address</label>
+                        <p>{doctor.address}</p>
+                      </div>
+                    </div>{" "}
+                    <div className="info-item">
+                      <i className="fas fa-money-bill-alt"></i>
+                      <div>
+                        <label>Fee per Visit</label>
+                        <p>৳{doctor.feePerCunsultation}</p>
+                      </div>
+                    </div>
+                    {doctor.website && (
+                      <div className="info-item">
+                        <i className="fas fa-globe"></i>
+                        <div>
+                          <label>Website</label>
+                          <p>
+                            <a
+                              href={doctor.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {doctor.website}
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {doctor.experience && (
+                    <div className="doctor-experience">
+                      <h3>Experience</h3>
+                      <p>{doctor.experience} Years</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </Col>
             <Col span={8} sm={24} xs={24} lg={8}>
-              <h1 className="normal-text">
-                <b>Timings :</b> {doctor.timings[0]} - {doctor.timings[1]}
-              </h1>
-              <p>
-                <b>Phone Number : </b>
-                {doctor.phoneNumber}
-              </p>
-              <p>
-                <b>Address : </b>
-                {doctor.address}
-              </p>
-              <p>
-                <b>Fee per Visit : </b>
-                {doctor.feePerCunsultation}
-              </p>
-              <p>
-                <b>Website : </b>
-                {doctor.website}
-              </p>
-              <div className="d-flex flex-column pt-2 mt-2">
-                <DatePicker
-                  format="DD-MM-YYYY"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    setDate(moment(value).format("DD-MM-YYYY"));
-                    setIsAvailable(false);
-                  }}
-                />
-                <TimePicker
-                  format="HH:mm"
-                  className="mt-3"
-                  minuteStep={30}
-                  showNow={false}
-                  hideDisabledOptions={true}
-                  onChange={(value) => {
-                    setIsAvailable(false);
-                    if (value) {
-                      const timeString = moment(value).format("HH:mm");
+              <div className="card booking-card">
+                <h2 className="card-title">Book Appointment</h2>
+                <div className="booking-form">
+                  <div className="date-picker-container">
+                    <label>Select Date</label>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      disabledDate={disabledDate}
+                      className="full-width-button"
+                      onChange={(value) => {
+                        setDate(moment(value).format("DD-MM-YYYY"));
+                        setIsAvailable(false);
+                      }}
+                    />
+                  </div>
 
-                      // Check if time is within doctor's hours
-                      const doctorStartTime = moment(
-                        doctor.timings[0],
-                        "HH:mm"
-                      );
-                      const doctorEndTime = moment(doctor.timings[1], "HH:mm");
-                      const selectedTime = moment(timeString, "HH:mm");
+                  <div className="time-picker-container">
+                    <label>Select Time</label>
+                    <TimePicker
+                      format="HH:mm"
+                      className="full-width-button"
+                      minuteStep={30}
+                      showNow={false}
+                      hideDisabledOptions={true}
+                      onChange={(value) => {
+                        setIsAvailable(false);
+                        if (value) {
+                          const timeString = moment(value).format("HH:mm");
 
-                      if (
-                        selectedTime.isBefore(doctorStartTime) ||
-                        selectedTime.isSameOrAfter(doctorEndTime)
-                      ) {
-                        toast.error(
-                          "Selected time is outside doctor's working hours"
-                        );
-                        return;
-                      }
+                          // Check if time is within doctor's hours
+                          const doctorStartTime = moment(
+                            doctor.timings[0],
+                            "HH:mm"
+                          );
+                          const doctorEndTime = moment(
+                            doctor.timings[1],
+                            "HH:mm"
+                          );
+                          const selectedTime = moment(timeString, "HH:mm");
 
-                      // Check if time is at 30-minute intervals
-                      const minutes = selectedTime.minutes();
-                      if (minutes !== 0 && minutes !== 30) {
-                        toast.error(
-                          "Please select appointment time at hour or half-hour intervals"
-                        );
-                        return;
-                      }
-
-                      setTime(timeString);
-                    }
-                  }}
-                  placeholder={`Select time between ${doctor.timings[0]} - ${doctor.timings[1]}`}
-                  disabledTime={() => {
-                    const doctorStart = moment(doctor.timings[0], "HH:mm");
-                    const doctorEnd = moment(doctor.timings[1], "HH:mm");
-
-                    return {
-                      disabledHours: () => {
-                        let disabledHours = [];
-                        for (let i = 0; i < 24; i++) {
                           if (
-                            i < doctorStart.hours() ||
-                            i > doctorEnd.hours()
+                            selectedTime.isBefore(doctorStartTime) ||
+                            selectedTime.isSameOrAfter(doctorEndTime)
                           ) {
-                            disabledHours.push(i);
+                            toast.error(
+                              "Selected time is outside doctor's working hours"
+                            );
+                            return;
                           }
+
+                          // Check if time is at 30-minute intervals
+                          const minutes = selectedTime.minutes();
+                          if (minutes !== 0 && minutes !== 30) {
+                            toast.error(
+                              "Please select appointment time at hour or half-hour intervals"
+                            );
+                            return;
+                          }
+
+                          setTime(timeString);
                         }
-                        return disabledHours;
-                      },
-                      disabledMinutes: (hour) => {
-                        let disabledMinutes = [];
-                        for (let i = 0; i < 60; i++) {
-                          if (i !== 0 && i !== 30) {
-                            disabledMinutes.push(i);
-                          }
+                      }}
+                      placeholder={`Select time between ${doctor.timings[0]} - ${doctor.timings[1]}`}
+                      disabledTime={() => {
+                        const doctorStart = moment(doctor.timings[0], "HH:mm");
+                        const doctorEnd = moment(doctor.timings[1], "HH:mm");
 
-                          if (
-                            hour === doctorStart.hours() &&
-                            i < doctorStart.minutes()
-                          ) {
-                            disabledMinutes.push(i);
-                          }
+                        return {
+                          disabledHours: () => {
+                            let disabledHours = [];
+                            for (let i = 0; i < 24; i++) {
+                              if (
+                                i < doctorStart.hours() ||
+                                i > doctorEnd.hours()
+                              ) {
+                                disabledHours.push(i);
+                              }
+                            }
+                            return disabledHours;
+                          },
+                          disabledMinutes: (hour) => {
+                            let disabledMinutes = [];
+                            for (let i = 0; i < 60; i++) {
+                              if (i !== 0 && i !== 30) {
+                                disabledMinutes.push(i);
+                              }
 
-                          if (
-                            hour === doctorEnd.hours() &&
-                            i >= doctorEnd.minutes()
-                          ) {
-                            disabledMinutes.push(i);
-                          }
-                        }
-                        return disabledMinutes;
-                      },
-                    };
-                  }}
-                />
-                {!isAvailable && date && time && (
-                  <Button
-                    className="primary-button mt-3 full-width-button"
-                    onClick={checkAvailability}
-                  >
-                    Check Availability
-                  </Button>
-                )}
+                              if (
+                                hour === doctorStart.hours() &&
+                                i < doctorStart.minutes()
+                              ) {
+                                disabledMinutes.push(i);
+                              }
 
-                {isAvailable && (
-                  <Button
-                    className="primary-button mt-3 full-width-button"
-                    onClick={bookNow}
-                  >
-                    Book Now
-                  </Button>
-                )}
+                              if (
+                                hour === doctorEnd.hours() &&
+                                i >= doctorEnd.minutes()
+                              ) {
+                                disabledMinutes.push(i);
+                              }
+                            }
+                            return disabledMinutes;
+                          },
+                        };
+                      }}
+                    />
+                  </div>
+
+                  <div className="booking-actions">
+                    {!isAvailable && date && time && (
+                      <Button
+                        className="primary-button full-width-button"
+                        onClick={checkAvailability}
+                      >
+                        Check Availability
+                      </Button>
+                    )}
+
+                    {isAvailable && (
+                      <Button
+                        className="primary-button full-width-button"
+                        onClick={bookNow}
+                      >
+                        Book Now
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </Col>
           </Row>

@@ -18,28 +18,6 @@ EasyDoc is a web-based appointment management system developed as part of the CS
 
 ---
 
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Features](#features)
-- [System Architecture](#system-architecture)
-- [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Testing](#testing)
-- [Authors](#authors)
-- [License](#license)
-
----
-
-## Introduction
-
-The goal of EasyDoc is to provide a user-friendly platform for managing healthcare appointments. The system supports multiple user roles (patients, doctors, admins) and ensures secure, efficient, and accessible appointment management.
-
----
-
 ## Features
 
 - User registration and authentication
@@ -100,7 +78,7 @@ tests/              # Backend API tests
 
 1. Clone the repository:
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/404mahdi/EasyDoc.git
    cd EasyDoc
    ```
 2. Install backend dependencies:
